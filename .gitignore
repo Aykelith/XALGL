@@ -1,0 +1,6 @@
+builds
+*.dll
+bin/res/models
+*.png
+*.exe
+*.bat
