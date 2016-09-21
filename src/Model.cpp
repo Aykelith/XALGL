@@ -9,6 +9,8 @@ uint d_totalMeshes = 0;
         std::string d_texInfo;
         uint        d_texCount = 0;
     #endif
+    
+#include <functional>
 #endif
 
 Model::Model(const std::string& path) {
@@ -28,7 +30,7 @@ Model::Model(const std::string& path) {
     processNode(scene->mRootNode, scene);
     
 #ifdef MODEL_CONSOLE_INFO
-    std::cout << "===================================\n"
+    std::cout << "= MODEL ===========================\n"
               << "Model file: " << path << "\n"
               << "Meshes: " << d_totalMeshes << "\n";
               
@@ -38,19 +40,32 @@ Model::Model(const std::string& path) {
         }
     #endif
       
-    std::cout << "Textures: " << m_texturesLoaded.size() << "\n"
-              << ((m_texturesLoaded.size() > 0) ? d_texInfo : "")
-              << "===================================\n";
+    #ifdef MODEL_CONSOLE_TEX_INFO
+        std::cout << "Textures: " << m_texturesLoaded.size() << "\n"
+                  << ((m_texturesLoaded.size() > 0) ? d_texInfo : "");
+    #endif
+    
+    #ifdef MODEL_CONSOLE_MORE_INFO
+        std::cout << "Has:\n"
+                  << "\tAnimations: " << scene->mNumAnimations << "\n"
+                  << "\tCameras: " <<  scene->mNumCameras << "\n"
+                  << "\tLights: " <<  scene->mNumLights << "\n"
+                  << "\tMaterials: " <<  scene->mNumMaterials << "\n"
+                  << "\tMeshes: " <<  scene->mNumMeshes << "\n"
+                  << "\tTextures: " <<  scene->mNumCameras << "\n";
+    #endif
+    
+    std::cout << "===================================\n";
 #endif
 }
 
-void Model::draw(StaticShader& shader) {
+void Model::draw(Shader::ShaderProgram& shader) {
     for(GLuint i = 0; i < m_meshes.size(); i++)
         m_meshes[i].draw(shader);
 }
 
 #ifdef EXPERIMENTAL_DRAW_SAME_MESH
-void Model::drawE(StaticShader& shader, GLuint index) {
+void Model::drawE(Shader::ShaderProgram& shader, GLuint index) {
     m_meshes[index].draw(shader);
 }
 #endif

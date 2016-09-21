@@ -1,6 +1,8 @@
 #ifndef DEBUG_HPP
 #define DEBUG_HPP
 
+#include <Global.hpp>
+
 #include <GL.hpp>
 #include <iostream>
 

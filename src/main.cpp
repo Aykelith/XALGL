@@ -3,14 +3,9 @@
 #include <SFML/System.hpp>
 #include <iostream>
 
-// #include <Loader.hpp>
-// #include <RawModel.hpp>
-#include <StaticShader.hpp>
-// #include <TexturedModel.hpp>
-// #include <ModelTexture.hpp>
-// #include <Entity.hpp>
 #include <Camera.hpp>
 #include <RenderManager.hpp>
+#include <Shader/ShaderGenerator.hpp>
 
 #include <Debug.hpp>
 
@@ -37,8 +32,15 @@ int main()
     
     glm::mat4 projectionMatrix = glm::perspective(glm::radians(FOV), (float)window.getSize().x/(float)window.getSize().y, NEAR_PLANE, FAR_PLANE);
     
+    Shader::Settings shaderSettings;
+    shaderSettings.fragment.material = true;
+    shaderSettings.fragment.light.directionalLight = true;
+    shaderSettings.fragment.light.pointLights = 2;
+    shaderSettings.fragment.diffuseTextures = 1;
+    
     RenderManager renderManager(projectionMatrix);
     renderManager.addModel(0, "res/models/nanosuit/nanosuit.obj");
+    renderManager.addShader(0, shaderSettings, "res/default.vert", "res/default.frag");
     
     auto dirLight = renderManager.getDirectionalLight();
     dirLight->setLightName("dirLight");
@@ -93,6 +95,9 @@ int main()
     sf::Clock clock;
     
     glEnable(GL_DEPTH_TEST);
+    glEnable(GL_CULL_FACE);  
+    
+    glCullFace(GL_BACK);  
     
     bool running = true;
     while (running)

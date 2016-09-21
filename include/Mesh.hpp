@@ -15,7 +15,7 @@
 
 #include <assimp/types.h>
 
-#include <StaticShader.hpp>
+#include <Shader/ShaderProgram.hpp>
 
 struct Vertex {
     // Position
@@ -58,7 +58,7 @@ public:
     void addIndex(GLuint index) { m_indices.push_back(index); }
 
     // Render the mesh
-    void draw(StaticShader& shader);
+    void draw(Shader::ShaderProgram& shader);
 
     // Initializes all the buffer objects/arrays
     void glue();

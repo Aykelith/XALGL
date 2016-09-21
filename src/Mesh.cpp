@@ -8,7 +8,7 @@
     #endif
 #endif
 
-void Mesh::draw(StaticShader& shader) 
+void Mesh::draw(Shader::ShaderProgram& shader) 
 {
     // Bind appropriate m_textures
     GLuint diffuseNr = 1;
@@ -28,13 +28,13 @@ void Mesh::draw(StaticShader& shader)
             ++specularNr;
         }
         // Now set the sampler to the correct texture unit
-        glUniform1i(glGetUniformLocation(shader.Program, (getTextureTypeName(name) + number).c_str()), i);
+        //glUniform1i(shader.getUniformLocation((getTextureTypeName(name) + number).c_str()), i);
         // And finally bind the texture
         glBindTexture(GL_TEXTURE_2D, m_textures[i].id);
     }
     
     // Also set each mesh's shininess property to a default value (if you want you could extend this to another mesh property and possibly change this value)
-    glUniform1f(glGetUniformLocation(shader.Program, "material.shininess"), 16.0f);
+    shader.loadFloat(Shader::Uniform::MATERIAL_SHININESS, 16.0f);
 
     // Draw mesh
     glBindVertexArray(m_VAO);
@@ -84,7 +84,7 @@ void Mesh::unbindTextures() {
 
 void Mesh::drawE(StaticShader& shader) {
     // Also set each mesh's shininess property to a default value (if you want you could extend this to another mesh property and possibly change this value)
-    glUniform1f(glGetUniformLocation(shader.Program, "material.shininess"), 16.0f);
+    shader.loadFloat(Shader::Uniform::MATERIAL_SHININESS, 16.0f);
 
     // Draw mesh
     glBindVertexArray(m_VAO);

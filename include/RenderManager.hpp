@@ -11,18 +11,19 @@
 
 #include <GL.hpp>
 #include <Model.hpp>
-#include <StaticShader.hpp>
+#include <Shader/ShaderGenerator.hpp>
 #include <Camera.hpp>
-#include <DirectionalLight.hpp>
-#include <PointLight.hpp>
+
+#include <Light/DirectionalLight.hpp>
+#include <Light/PointLight.hpp>
 
 #ifdef LIGHT_BOXES
-    #include <DebugLight.hpp>
+    #include <Debug/Light.hpp>
 #endif
 
 struct DrawableList {
     Model model;
-    std::unique_ptr<StaticShader> shader;
+    Shader::ShaderProgram shader;
     std::vector<glm::mat4> drawables;
     
     DrawableList() = default;
@@ -45,10 +46,11 @@ public:
     
     void addModel(uint32_t id, const std::string& file);
 
-    StaticShader* getShader(uint32_t id) { return m_drawableLists[id].shader.get(); }
+    void addShader(uint32_t id, const Shader::Settings& settings);
+    void addShader(uint32_t id, const Shader::Settings& settings, const std::string& vertexFile, const std::string& fragmentFile);
     
-    DirectionalLight* getDirectionalLight() { return &m_directionalLight; }
-    PointLight*       addPointLight() {
+    Light::DirectionalLight* getDirectionalLight() { return &m_directionalLight; }
+    Light::PointLight*       addPointLight() {
         m_pointLights.emplace_back();
         return &m_pointLights.back();
     }
@@ -61,14 +63,12 @@ private:
     
     std::unordered_map<uint32_t, DrawableList> m_drawableLists;
     
-    DirectionalLight m_directionalLight;
-    std::vector<PointLight> m_pointLights;
-    // TODO
-    // std::unordered_map<uint32_t, std::pair<std::unique_ptr<StaticShader>, uint32_t> > m_shaders;
+    Light::DirectionalLight m_directionalLight;
+    std::vector<Light::PointLight> m_pointLights;
     
 #ifdef LIGHT_BOXES
-    DebugLightShader d_lightShader;
-    DebugLightModel d_lightModel;
+    Debug::LightShader d_lightShader;
+    Debug::LightModel d_lightModel;
 #endif
     
 };

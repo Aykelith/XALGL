@@ -18,11 +18,15 @@ typedef unsigned int uint;
 
 #define MODEL_CONSOLE_INFO
 #ifdef MODEL_CONSOLE_INFO
-    #define MODEL_CONSOLE_MESH_INFO
-    #define MODEL_CONSOLE_TEX_INFO
+    //#define MODEL_CONSOLE_MESH_INFO
+    //#define MODEL_CONSOLE_TEX_INFO
+    #define MODEL_CONSOLE_MORE_INFO
 #endif
 #define LIGHT_BOXES
+#define SHADER_OUTPUT
 // #define NDEBUG
+
+#define GLM_FORCE_CXX11 
 
 #include <cassert>
 

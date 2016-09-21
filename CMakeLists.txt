@@ -38,7 +38,7 @@ include_directories(${SFML_INCLUDE_DIR})
 include_directories(${OPENGL_INCLUDE_DIRS})
 include_directories(${GLEW_INCLUDE_DIRS})
 include_directories(${ASSIMP_INCLUDE_DIR})
-include_directories("E:/Work/Programare/Libs/_sources/glm")
+include_directories(SYSTEM "E:/Work/Programare/Libs/_sources/glm")
 
 # Compiler settings
 ################################################################################

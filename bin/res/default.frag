@@ -34,7 +34,7 @@ in vec3 FragPos;
 
 out vec4 outColor;
 
-uniform sampler2D texture_diffuse1;
+//uniform sampler2D texture_diffuse1;
 
 uniform Material material;
 uniform vec3 viewPos;
