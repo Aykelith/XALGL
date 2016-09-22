@@ -51,7 +51,7 @@ void main()
     //vec3 color = texture(texture_diffuse1, TexCoords).rgb;
     vec3 norm = normalize(Normal);
     vec3 viewDir = normalize(viewPos - FragPos);
-
+    
     // Phase 1: Directional lighting
     vec3 result = CalcDirLight(dirLight, norm, viewDir);
     // Phase 2: Point lights
@@ -60,7 +60,7 @@ void main()
     // Phase 3: Spot light
     //result += CalcSpotLight(spotLight, norm, FragPos, viewDir);    
     
-    outColor = vec4(result, 1.0);
+    outColor = vec4(1.f, 0.f, 0.f, 1.0);
 }
 
 // Calculates the color when using a directional light.

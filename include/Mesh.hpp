@@ -2,6 +2,7 @@
 #define MESH_HPP
 
 #include <Global.hpp>
+#include <Debug.hpp>
 
 #include <string>
 #include <fstream>
@@ -45,16 +46,34 @@ struct Texture {
     aiString path;
 };
 
+struct Material {
+    GLuint diffuseTexture;
+    GLuint specularTexture;
+    GLfloat shininess = 16.f;
+    
+    bool haveDiffuseTexture = false;
+    bool haveSpecularTexture = false;
+};
+
 class Mesh {
 public:
     Mesh() = default;
     
     void setVerticesCount(uint size) { m_vertices.reserve(size); }
-    void setTexturesCount(uint size) { m_textures.reserve(size); }
+    // void setTexturesCount(uint size) { m_textures.reserve(size); }
     void setIndicesCount(uint size) { m_indices.reserve(size); }
     
     void addVertex(const Vertex& vertex) { m_vertices.push_back(vertex); }
-    void addTexture(const Texture& texture) { m_textures.push_back(texture); }
+    void addTexture(GLuint id, TextureType type) { 
+        if (type == TextureType::Diffuse) { 
+            m_material.diffuseTexture = id;
+            m_material.haveDiffuseTexture = true;
+        }
+        else {
+            m_material.specularTexture = id;
+            m_material.haveSpecularTexture = true;
+        }
+    }
     void addIndex(GLuint index) { m_indices.push_back(index); }
 
     // Render the mesh
@@ -80,7 +99,7 @@ protected:
     
     std::vector<Vertex> m_vertices;
     std::vector<GLuint> m_indices;
-    std::vector<Texture> m_textures;
+    Material m_material;
 };
 
 #endif

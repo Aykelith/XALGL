@@ -146,6 +146,7 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene) {
             meshObject.addIndex(face.mIndices[j]);
     }
     // Process materials
+    // assert(mesh->mMaterialIndex <= 1 && "The engine support just one material"); <= Assimp split the mesh into multiple meshes if it contains more then 1 material
     if(mesh->mMaterialIndex >= 0)
     {
         aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
@@ -157,7 +158,7 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene) {
         // Normal: texture_normalN
         
         uint texturesCount = material->GetTextureCount(aiTextureType_DIFFUSE) + material->GetTextureCount(aiTextureType_SPECULAR);
-        meshObject.setTexturesCount(texturesCount);
+        //meshObject.setTexturesCount(texturesCount);
         m_texturesLoaded.reserve(texturesCount);
         
 #ifdef MODEL_CONSOLE_TEX_INFO
@@ -177,6 +178,7 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene) {
 }
 
 void Model::loadMaterialTextures(aiMaterial* mat, aiTextureType type, TextureType typeName, Mesh& mesh) {
+    assert(mat->GetTextureCount(type) <= 1 && "The engine support just 1 diffuse and 1 one specular texture");
     for(GLuint i = 0; i < mat->GetTextureCount(type); i++)
     {
         aiString str;
@@ -190,7 +192,7 @@ void Model::loadMaterialTextures(aiMaterial* mat, aiTextureType type, TextureTyp
 #ifdef MODEL_CONSOLE_TEX_INFO
                 d_texInfo += "\t" + std::to_string(d_texCount) + ":" + std::to_string(typeName) + ":l \"" + m_texturesLoaded[j].path.C_Str() + "\"\n";
 #endif
-                mesh.addTexture(m_texturesLoaded[j]);
+                mesh.addTexture(m_texturesLoaded[j].id, typeName);
                 skip = true; // A texture with the same filepath has already been loaded, continue to next one. (optimization)
                 break;
             }
@@ -204,7 +206,7 @@ void Model::loadMaterialTextures(aiMaterial* mat, aiTextureType type, TextureTyp
             texture.id = Loader::loadTexture(m_directory + "/" + str.C_Str());
             texture.type = typeName;
             texture.path = str;
-            mesh.addTexture(texture);
+            mesh.addTexture(texture.id, typeName);
             m_texturesLoaded.push_back(texture);  // Store it as texture loaded for entire model, to ensure we won't unnecesery load duplicate textures.
         }
     }

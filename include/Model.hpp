@@ -57,7 +57,6 @@ public:
 #endif
     
 private:
-    /*  Model Data  */
     std::vector<Mesh> m_meshes;
     std::string m_directory;
     std::vector<Texture> m_texturesLoaded;	// Stores all the textures loaded so far, optimization to make sure textures aren't loaded more than once.

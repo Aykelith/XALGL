@@ -17,6 +17,8 @@
 #include <Light/DirectionalLight.hpp>
 #include <Light/PointLight.hpp>
 
+#include <Terrain/Terrain.hpp>
+
 #ifdef LIGHT_BOXES
     #include <Debug/Light.hpp>
 #endif
@@ -66,6 +68,9 @@ private:
     Light::DirectionalLight m_directionalLight;
     std::vector<Light::PointLight> m_pointLights;
     
+    Terrain m_terrain;
+    
+    // DEBUG
 #ifdef LIGHT_BOXES
     Debug::LightShader d_lightShader;
     Debug::LightModel d_lightModel;

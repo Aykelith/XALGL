@@ -121,7 +121,11 @@ namespace Shader {
         
         if (settings.fragment.material) {
             shader.storeUniformLocation(Uniform::MATERIAL_SHININESS, "material.shininess");
+            shader.storeUniformLocation(Uniform::MATERIAL_DIFFUSE_TEXTURE, "material.diffuse");
+            shader.storeUniformLocation(Uniform::MATERIAL_SPECULAR_TEXTURE, "material.specular");
         }
+        
+        assert(!checkErrors());
     }
 }
 

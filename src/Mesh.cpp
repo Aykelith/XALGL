@@ -10,31 +10,22 @@
 
 void Mesh::draw(Shader::ShaderProgram& shader) 
 {
-    // Bind appropriate m_textures
-    GLuint diffuseNr = 1;
-    GLuint specularNr = 1;
-    for(GLuint i = 0; i < m_textures.size(); i++)
-    {
-        glActiveTexture(GL_TEXTURE0 + i); // Active proper texture unit before binding
-        // Retrieve texture number (the N in diffuse_textureN)
-        std::string number;
-        TextureType name = m_textures[i].type;
-        if(name == TextureType::Diffuse) {
-            number = std::to_string(diffuseNr); // Transfer GLuint to stream
-            ++diffuseNr;
-        }
-        else if(name == TextureType::Specular) {
-            number = std::to_string(specularNr); // Transfer GLuint to stream
-            ++specularNr;
-        }
-        // Now set the sampler to the correct texture unit
-        //glUniform1i(shader.getUniformLocation((getTextureTypeName(name) + number).c_str()), i);
-        // And finally bind the texture
-        glBindTexture(GL_TEXTURE_2D, m_textures[i].id);
+    // Bind appropriate textures
+    // Tip for multi texture: glActiveTexture(GL_TEXTURE0 + i);
+    if (m_material.haveDiffuseTexture) {
+        glActiveTexture(GL_TEXTURE0);
+        shader.loadInt(Shader::Uniform::MATERIAL_DIFFUSE_TEXTURE, 0);
+        glBindTexture(GL_TEXTURE_2D, m_material.diffuseTexture);
+    }
+    
+    if (m_material.haveSpecularTexture) {
+        glActiveTexture(GL_TEXTURE1);
+        shader.loadInt(Shader::Uniform::MATERIAL_SPECULAR_TEXTURE, 1);
+        glBindTexture(GL_TEXTURE_2D, m_material.specularTexture);
     }
     
     // Also set each mesh's shininess property to a default value (if you want you could extend this to another mesh property and possibly change this value)
-    shader.loadFloat(Shader::Uniform::MATERIAL_SHININESS, 16.0f);
+    shader.loadFloat(Shader::Uniform::MATERIAL_SHININESS, m_material.shininess);
 
     // Draw mesh
     glBindVertexArray(m_VAO);
@@ -42,9 +33,13 @@ void Mesh::draw(Shader::ShaderProgram& shader)
     glBindVertexArray(0);
 
     // Always good practice to set everything back to defaults once configured.
-    for (GLuint i = 0; i < m_textures.size(); i++)
-    {
-        glActiveTexture(GL_TEXTURE0 + i);
+    if (m_material.haveDiffuseTexture) {
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, 0);
+    }
+    
+    if (m_material.haveSpecularTexture) {
+        glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_2D, 0);
     }
 }
@@ -97,16 +92,16 @@ void Mesh::glue()
 {
 #ifdef MODEL_CONSOLE_MESH_INFO
     std::stringstream ss;
-    ss << "\t Mesh: V:" << m_vertices.size() << " I:" << m_indices.size() << " T:" << m_textures.size() << "\n";
+    ss << "\t Mesh: V:" << m_vertices.size() << " I:" << m_indices.size() << " T_D:" << m_material.haveDiffuseTexture << " T_S:" << m_material.haveSpecularTexture << "\n";
     
-    if (!m_textures.empty()) {
-        std::size_t diffuseCount = 0, specularCount = 0;
-        for(GLuint i = 0; i < m_textures.size(); i++) {
-            if (m_textures[i].type == TextureType::Diffuse) ++diffuseCount;
-            else if (m_textures[i].type == TextureType::Specular) ++specularCount;
-        }
-        ss << "\t\tdiffuse: " << diffuseCount << " specular:" << specularCount << "\n";
-    }
+    // if (!m_textures.empty()) {
+    //     std::size_t diffuseCount = 0, specularCount = 0;
+    //     for(GLuint i = 0; i < m_textures.size(); i++) {
+    //         if (m_textures[i].type == TextureType::Diffuse) ++diffuseCount;
+    //         else if (m_textures[i].type == TextureType::Specular) ++specularCount;
+    //     }
+    //     ss << "\t\tdiffuse: " << diffuseCount << " specular:" << specularCount << "\n";
+    // }
     
     d_info = ss.str();
 #endif

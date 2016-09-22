@@ -18,7 +18,7 @@ typedef unsigned int uint;
 
 #define MODEL_CONSOLE_INFO
 #ifdef MODEL_CONSOLE_INFO
-    //#define MODEL_CONSOLE_MESH_INFO
+    #define MODEL_CONSOLE_MESH_INFO
     //#define MODEL_CONSOLE_TEX_INFO
     #define MODEL_CONSOLE_MORE_INFO
 #endif

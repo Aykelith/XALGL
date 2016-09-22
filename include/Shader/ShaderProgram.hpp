@@ -19,6 +19,8 @@ namespace Shader {
         PROJECTION_MATRIX,
         VIEW_POS,
         MATERIAL_SHININESS,
+        MATERIAL_DIFFUSE_TEXTURE,
+        MATERIAL_SPECULAR_TEXTURE,
         _COUNT
     };
     
@@ -38,7 +40,7 @@ namespace Shader {
             if (success == GL_FALSE) {
                 GLchar log[512];
                 glGetShaderInfoLog(shaderID, 512, NULL, &log[0]);
-                std::cout << type << ":" << log << "\n";
+                std::cout << ((type == GL_VERTEX_SHADER) ? "VERT" : "FRAG") << ":" << log << "\n";
             }
             
             if (type == GL_VERTEX_SHADER) {
@@ -66,10 +68,11 @@ namespace Shader {
             glValidateProgram(m_programID);
         }
         
-        void loadFloat(uint id, GLfloat value) { glUniform1f(m_uniforms[id], value); }
-        void loadVector3(uint id, const glm::vec3& vec3) { glUniform3f(m_uniforms[id], vec3.x, vec3.y, vec3.z); }
-        void loadUInt(uint id, GLuint value) { glUniform1ui(m_uniforms[id], value); }
-        void loadMatrix(uint id, const glm::mat4& mat4) { glUniformMatrix4fv(m_uniforms[id], 1, GL_FALSE, glm::value_ptr(mat4)); }
+        void loadInt(uint id, GLint value) { glUniform1i(m_uniforms[id], value); assert(!checkErrors()); }
+        void loadUInt(uint id, GLuint value) { glUniform1ui(m_uniforms[id], value); assert(!checkErrors()); }
+        void loadFloat(uint id, GLfloat value) { glUniform1f(m_uniforms[id], value); assert(!checkErrors()); }
+        void loadVector3(uint id, const glm::vec3& vec3) { glUniform3f(m_uniforms[id], vec3.x, vec3.y, vec3.z); assert(!checkErrors()); }
+        void loadMatrix(uint id, const glm::mat4& mat4) { glUniformMatrix4fv(m_uniforms[id], 1, GL_FALSE, glm::value_ptr(mat4)); assert(!checkErrors()); }
         
         void storeUniformLocation(uint id, const char* name) {
             m_uniforms.emplace(id, glGetUniformLocation(m_programID, name));

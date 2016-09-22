@@ -2,6 +2,7 @@
 
 RenderManager::RenderManager(const glm::mat4& projectionMatrix)
     : m_projectionMatrix { projectionMatrix }
+    , m_terrain { 100, 100, projectionMatrix }
 #ifdef LIGHT_BOXES
     , d_lightShader { projectionMatrix }
 #endif
@@ -38,6 +39,7 @@ void RenderManager::addShader(uint32_t id, const Shader::Settings& settings) {
 }
 
 void RenderManager::addShader(uint32_t id, const Shader::Settings& settings, const std::string& vertexFile, const std::string& fragmentFile) {
+    assert(!checkErrors(__LINE__, __FILE__));
     auto& shader = m_drawableLists[id].shader;
     shader.loadShader(vertexFile, GL_VERTEX_SHADER);
     shader.loadShader(fragmentFile, GL_FRAGMENT_SHADER);
@@ -48,6 +50,8 @@ void RenderManager::addShader(uint32_t id, const Shader::Settings& settings, con
 }
 
 void RenderManager::render(Camera &camera) {
+    m_terrain.draw();
+    
     for (auto& list : m_drawableLists) {
         list.second.shader.start();
         
@@ -55,7 +59,7 @@ void RenderManager::render(Camera &camera) {
         list.second.shader.loadVector3(Shader::Uniform::VIEW_POS, camera.getPosition());
         
         m_directionalLight.update(list.second.shader);
-        
+
         for (auto it = m_pointLights.begin(); it != m_pointLights.end(); ++it) {
             it->update(list.second.shader);
         }
