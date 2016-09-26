@@ -13,7 +13,7 @@
 
 static const float FOV = 45.f;
 static const float NEAR_PLANE = 0.1f;
-static const float FAR_PLANE = 100.f;
+static const float FAR_PLANE = 1000.f;
 
 int main()
 {
@@ -34,9 +34,11 @@ int main()
     
     Shader::Settings shaderSettings;
     shaderSettings.fragment.material = true;
+    shaderSettings.fragment.material.diffuseTextures = true;
+    shaderSettings.fragment.material.specularTextures = true;
     shaderSettings.fragment.light.directionalLight = true;
     shaderSettings.fragment.light.pointLights = 2;
-    shaderSettings.fragment.diffuseTextures = 1;
+    // shaderSettings.fragment.diffuseTextures = 1;
     
     RenderManager renderManager(projectionMatrix);
     renderManager.addModel(0, "res/models/nanosuit/nanosuit.obj");
@@ -67,7 +69,7 @@ int main()
     pointLight2->setConstant(4.f);
     pointLight2->setLinear(0.09f);
     pointLight2->setQuadratic(0.032f);
-    pointLight2->setPosition({0.7f,  0.2f,  2.0f});
+    pointLight2->setPosition({0.7f,  2.f,  2.0f});
     
     glm::mat4 modelm;
     modelm = glm::translate(modelm, glm::vec3(0.f, 0.f, -3.f));
@@ -95,7 +97,8 @@ int main()
     sf::Clock clock;
     
     glEnable(GL_DEPTH_TEST);
-    glEnable(GL_CULL_FACE);  
+    glEnable(GL_CULL_FACE);
+    // glPolygonMode( GL_FRONT_AND_BACK, GL_LINE ); // wireframe
     
     glCullFace(GL_BACK);  
     

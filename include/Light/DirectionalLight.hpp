@@ -20,7 +20,7 @@ namespace Light {
             if (m_propertiesStatus.any()) {
                 Light::implUpdate(shader);
                 implUpdate(shader);
-                m_propertiesStatus.reset();
+                m_changes = true;
             } 
         }
     private:

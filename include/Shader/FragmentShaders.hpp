@@ -10,17 +10,17 @@ in vec2 TexCoords;\
 out vec4 outColor;\
 ";
     
-    static const char* fragment_material = "\
+    static const char* fragment_materialDefault = "\
 struct Material {\
-    sampler2D diffuse;\
-    sampler2D specular;\
     float shininess;\
-};\
-\
-uniform Material material;\
 ";
+
+    static const char* fragment_material_diffuseTexture = "sampler2D diffuse;";
+    static const char* fragment_material_specularTexture = "sampler2D specular;";
+
+    static const char* fragment_materialEnd = "}; uniform Material material;";
     
-    static const char* fragment_diffuseTexture = "uniform sampler2D texture_diffuse";
+    // static const char* fragment_diffuseTexture = "uniform sampler2D texture_diffuse";
     
     static const char* fragment_lightDefaultHeader = "\
 in vec3 Normal;\

@@ -13,14 +13,18 @@
 #include <unordered_map>
 
 namespace Shader {
+    static const int MAX_MATERIALS = 10;
+    static const int MAX_MATERIAL_DIFFUSE_TEXTURES = 10;
+    
     enum Uniform {
         MODEL_MATRIX = 0,
         VIEW_MATRIX,
         PROJECTION_MATRIX,
         VIEW_POS,
-        MATERIAL_SHININESS,
+        MATERIAL,
+        MATERIAL_SHININESS = MATERIAL + MAX_MATERIALS - 1,
         MATERIAL_DIFFUSE_TEXTURE,
-        MATERIAL_SPECULAR_TEXTURE,
+        MATERIAL_SPECULAR_TEXTURE = MATERIAL_DIFFUSE_TEXTURE + MAX_MATERIAL_DIFFUSE_TEXTURES - 1,
         _COUNT
     };
     
@@ -70,12 +74,13 @@ namespace Shader {
         
         void loadInt(uint id, GLint value) { glUniform1i(m_uniforms[id], value); assert(!checkErrors()); }
         void loadUInt(uint id, GLuint value) { glUniform1ui(m_uniforms[id], value); assert(!checkErrors()); }
-        void loadFloat(uint id, GLfloat value) { glUniform1f(m_uniforms[id], value); assert(!checkErrors()); }
+        void loadFloat(uint id, GLfloat value) { glUniform1f(m_uniforms[id], value);  }
         void loadVector3(uint id, const glm::vec3& vec3) { glUniform3f(m_uniforms[id], vec3.x, vec3.y, vec3.z); assert(!checkErrors()); }
         void loadMatrix(uint id, const glm::mat4& mat4) { glUniformMatrix4fv(m_uniforms[id], 1, GL_FALSE, glm::value_ptr(mat4)); assert(!checkErrors()); }
         
         void storeUniformLocation(uint id, const char* name) {
             m_uniforms.emplace(id, glGetUniformLocation(m_programID, name));
+            assert(!checkErrors());
             assert(m_uniforms[id] != -1);
         }
         

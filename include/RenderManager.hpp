@@ -18,6 +18,7 @@
 #include <Light/PointLight.hpp>
 
 #include <Terrain/Terrain.hpp>
+#include <BlendMap.hpp>
 
 #ifdef LIGHT_BOXES
     #include <Debug/Light.hpp>
@@ -68,7 +69,8 @@ private:
     Light::DirectionalLight m_directionalLight;
     std::vector<Light::PointLight> m_pointLights;
     
-    Terrain m_terrain;
+    Terrains::Terrain m_terrain;
+    BlendMap m_terrainBlendmap;
     
     // DEBUG
 #ifdef LIGHT_BOXES

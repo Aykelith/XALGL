@@ -17,6 +17,7 @@
 #include <assimp/types.h>
 
 #include <Shader/ShaderProgram.hpp>
+#include <Loader.hpp>
 
 struct Vertex {
     // Position

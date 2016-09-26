@@ -38,7 +38,14 @@ namespace Light {
             assert(!m_lightName.empty());
             if (m_propertiesStatus.any()) {
                 implUpdate(shader);
+                m_changes = true;
+            } 
+        }
+        
+        void changesSaved() { 
+            if (m_changes) {
                 m_propertiesStatus.reset();
+                m_changes = false;
             } 
         }
     protected:
@@ -56,6 +63,8 @@ namespace Light {
         std::string m_lightName;
         
         std::bitset<N> m_propertiesStatus;
+        
+        bool m_changes = false;
     };
 }
 

@@ -13,22 +13,29 @@ namespace Shader {
     static const char* shader_mainEnd   = "}";
     static const char* shader_normalEndKey = ";";
     
-    inline void generateShaderFiles(ShaderProgram& shader, const Settings& settings) {
+    inline void generateShaderHeader(std::string& vertexData, std::string& fragmentData, const Settings& settings) {
         bool haveLights = settings.fragment.light.directionalLight || settings.fragment.light.pointLights;
+        vertexData = vertex_defaultHeader;
+        fragmentData = fragment_defaultHeader;
         
-        // HEADER
-        //======================================================================
-        std::string vertexData = vertex_defaultHeader;
-        std::string fragmentData = fragment_defaultHeader;
-        
-        if (settings.fragment.diffuseTextures) {
-            for (uint i=1; i<=settings.fragment.diffuseTextures; ++i) {
-                fragmentData += fragment_diffuseTexture + std::to_string(i) + shader_normalEndKey;
-            }
-        }
+        // if (settings.fragment.diffuseTextures) {
+        //     for (uint i=1; i<=settings.fragment.diffuseTextures; ++i) {
+        //         fragmentData += fragment_diffuseTexture + std::to_string(i) + shader_normalEndKey;
+        //     }
+        // }
         
         if (settings.fragment.material) {
-            fragmentData += fragment_material;
+            fragmentData += fragment_materialDefault;
+            
+            if (settings.fragment.material.diffuseTextures) {
+                fragmentData += fragment_material_diffuseTexture;
+            }
+            
+            if (settings.fragment.material.specularTextures) {
+                fragmentData += fragment_material_specularTexture;
+            }
+            
+            fragmentData += fragment_materialEnd;
         }
         
         if (haveLights) {
@@ -44,10 +51,10 @@ namespace Shader {
                 fragmentData += fragment_pointLight;
             }
         }
-        //======================================================================
-        
-        // BODY
-        //======================================================================
+    }
+    
+    inline void generateIncompleteShaderBody(std::string& vertexData, std::string& fragmentData, const Settings& settings) {
+        bool haveLights = settings.fragment.light.directionalLight || settings.fragment.light.pointLights;
         vertexData += std::string() + shader_mainStart + vertex_defaultMain;
         fragmentData += shader_mainStart;
         
@@ -70,6 +77,15 @@ namespace Shader {
         } else {
             
         }
+    }
+    
+    inline void generateShaderFiles(ShaderProgram& shader, const Settings& settings) {        
+        std::string vertexData, fragmentData;
+        generateShaderHeader(vertexData, fragmentData, settings);
+        
+        // BODY
+        //======================================================================
+        generateIncompleteShaderBody(vertexData, fragmentData, settings);
         
         vertexData += shader_mainEnd;
         fragmentData += shader_mainEnd;
@@ -120,9 +136,17 @@ namespace Shader {
         }
         
         if (settings.fragment.material) {
-            shader.storeUniformLocation(Uniform::MATERIAL_SHININESS, "material.shininess");
-            shader.storeUniformLocation(Uniform::MATERIAL_DIFFUSE_TEXTURE, "material.diffuse");
-            shader.storeUniformLocation(Uniform::MATERIAL_SPECULAR_TEXTURE, "material.specular");
+            if (settings.fragment.material.constantShininess == -1.f) {
+                shader.storeUniformLocation(Uniform::MATERIAL_SHININESS, "material.shininess");
+            }
+            
+            if (settings.fragment.material.diffuseTextures) {
+                shader.storeUniformLocation(Uniform::MATERIAL_DIFFUSE_TEXTURE, "material.diffuse");
+            }
+            
+            if (settings.fragment.material.specularTextures) {
+                shader.storeUniformLocation(Uniform::MATERIAL_SPECULAR_TEXTURE, "material.specular");
+            }
         }
         
         assert(!checkErrors());

@@ -2,11 +2,19 @@
 
 RenderManager::RenderManager(const glm::mat4& projectionMatrix)
     : m_projectionMatrix { projectionMatrix }
-    , m_terrain { 100, 100, projectionMatrix }
+    , m_terrain { 0, -1, projectionMatrix }
 #ifdef LIGHT_BOXES
     , d_lightShader { projectionMatrix }
 #endif
-{ }
+{ 
+    m_terrainBlendmap.setTexture(ColorChannel::BLACK, "res/grassy2.png");
+    m_terrainBlendmap.setTexture(ColorChannel::RED, "res/mud.png");
+    m_terrainBlendmap.setTexture(ColorChannel::GREEN, "res/grassFlowers.png");
+    m_terrainBlendmap.setTexture(ColorChannel::BLUE, "res/path.png");
+    m_terrainBlendmap.setBlendMap("res/blendMap.png");
+    m_terrainBlendmap.initialize(m_terrain.getShader());
+    std::cout << "Out\n";
+}
 
 void RenderManager::addDrawable(uint32_t id, uint32_t model) {
     
@@ -50,7 +58,23 @@ void RenderManager::addShader(uint32_t id, const Shader::Settings& settings, con
 }
 
 void RenderManager::render(Camera &camera) {
+    auto& terrainShader = m_terrain.getShader();
+    terrainShader.start();
+    m_terrainBlendmap.start(terrainShader);
+    terrainShader.loadMatrix(Shader::Uniform::VIEW_MATRIX, camera.getViewMatrix());
+    
+    // terrainShader.loadVector3(Shader::Uniform::VIEW_POS, camera.getPosition());
+    
+    // m_directionalLight.update(terrainShader);
+    // 
+    // for (auto it = m_pointLights.begin(); it != m_pointLights.end(); ++it) {
+    //     it->update(terrainShader);
+    // }
+    
     m_terrain.draw();
+    m_terrainBlendmap.stop();
+    terrainShader.stop();
+    assert(!checkErrors());
     
     for (auto& list : m_drawableLists) {
         list.second.shader.start();
@@ -79,9 +103,17 @@ void RenderManager::render(Camera &camera) {
             list.second.shader.loadMatrix(Shader::Uniform::MODEL_MATRIX, *it);
             list.second.model.draw(list.second.shader);
         }
+        
+        assert(!checkErrors());
 #endif
         
         list.second.shader.stop();
+    }
+    
+    m_directionalLight.changesSaved();
+    
+    for (auto it = m_pointLights.begin(); it != m_pointLights.end(); ++it) {
+        it->changesSaved();
     }
     
 #ifdef LIGHT_BOXES
