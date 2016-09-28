@@ -13,23 +13,14 @@ namespace Terrains {
         static const int VERTEX_COUNT = 128;
         
     public:
-        Terrain(int gridX, int gridZ, const glm::mat4& projectionMatrix) {
+        Terrain(int gridX, int gridZ) {
             Shader::Settings shaderSettings;
-            // shaderSettings.fragment.light.directionalLight = true;
-            // shaderSettings.fragment.light.pointLights = 2;
+            shaderSettings.fragment.light.directionalLight = true;
+            shaderSettings.fragment.light.pointLights = 2;
             
             m_shader.loadShader(std::string("res/terrain.vert"), GL_VERTEX_SHADER);
             m_shader.loadShader(std::string("res/terrain.frag"), GL_FRAGMENT_SHADER);
             Shader::initializeShader(m_shader, shaderSettings);
-            m_shader.start();
-            
-            m_shader.loadMatrix(Shader::Uniform::PROJECTION_MATRIX, projectionMatrix);
-            
-            glm::mat4 modelm;
-            modelm = glm::translate(modelm, glm::vec3(0.f, 0.f, 0.f));
-            m_shader.loadMatrix(Shader::Uniform::MODEL_MATRIX, modelm);
-            
-            m_shader.stop();
             
             assert(!checkErrors());
             
@@ -40,6 +31,18 @@ namespace Terrains {
         };
         
         Shader::ShaderProgram& getShader() { return m_shader; }
+        
+        void setProjectionMatrix(const glm::mat4& projectionMatrix) { 
+            m_shader.start();
+            
+            m_shader.loadMatrix(Shader::Uniform::PROJECTION_MATRIX, projectionMatrix);
+            
+            glm::mat4 modelm;
+            modelm = glm::translate(modelm, glm::vec3(0.f, 0.f, 0.f));
+            m_shader.loadMatrix(Shader::Uniform::MODEL_MATRIX, modelm);
+            
+            m_shader.stop();
+        }
         
         void draw() {
             m_mesh.draw(m_shader);

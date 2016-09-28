@@ -50,10 +50,11 @@ struct Texture {
 struct Material {
     GLuint diffuseTexture;
     GLuint specularTexture;
-    GLfloat shininess = 16.f;
+    GLfloat shininess;
     
     bool haveDiffuseTexture = false;
     bool haveSpecularTexture = false;
+    bool haveShininess = false;
 };
 
 class Mesh {
@@ -76,6 +77,11 @@ public:
         }
     }
     void addIndex(GLuint index) { m_indices.push_back(index); }
+    
+    void setMaterialShininess(float shininess) { 
+        m_material.shininess = shininess;
+        m_material.haveShininess = true;
+    }
 
     // Render the mesh
     void draw(Shader::ShaderProgram& shader);

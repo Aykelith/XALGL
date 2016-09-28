@@ -55,6 +55,7 @@ namespace Shader {
         }
         void loadShader(const std::string& file, int type) {
             auto stringContent = getFileContent(file);
+            std::cout << "0\n";
             loadShader(stringContent.c_str(), type);
         }
         

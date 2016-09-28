@@ -25,7 +25,7 @@ void Mesh::draw(Shader::ShaderProgram& shader)
     }
     
     // Also set each mesh's shininess property to a default value (if you want you could extend this to another mesh property and possibly change this value)
-    // shader.loadFloat(Shader::Uniform::MATERIAL_SHININESS, m_material.shininess);
+    if (m_material.haveShininess) shader.loadFloat(Shader::Uniform::MATERIAL_SHININESS, m_material.shininess);
 
     // Draw mesh
     glBindVertexArray(m_VAO);

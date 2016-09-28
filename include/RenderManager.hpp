@@ -17,7 +17,7 @@
 #include <Light/DirectionalLight.hpp>
 #include <Light/PointLight.hpp>
 
-#include <Terrain/Terrain.hpp>
+#include <Terrain/HeightmapTerrain.hpp>
 #include <BlendMap.hpp>
 
 #ifdef LIGHT_BOXES
@@ -42,7 +42,18 @@ struct DrawableList {
 
 class RenderManager {
 public:
-    RenderManager(const glm::mat4& projectionMatrix);
+    RenderManager() = default;
+    
+    void initialize();
+    
+    void setProjectionMatrix(const glm::mat4& projectionMatrix) { 
+        m_projectionMatrix = projectionMatrix; 
+        m_terrain.setProjectionMatrix(projectionMatrix);
+        
+#ifdef LIGHT_BOXES
+        d_lightShader.setProjectionMatrix(projectionMatrix);
+#endif
+    }
     
     void addDrawable(uint32_t id, uint32_t model);
     void addDrawable(uint32_t model, const glm::mat4& modelMatrix);
@@ -58,7 +69,7 @@ public:
         return &m_pointLights.back();
     }
     
-    void render(Camera &camera);
+    void draw(Camera &camera);
     
     //void initialize();
 private:
@@ -69,7 +80,7 @@ private:
     Light::DirectionalLight m_directionalLight;
     std::vector<Light::PointLight> m_pointLights;
     
-    Terrains::Terrain m_terrain;
+    Terrains::HeightmapTerrain m_terrain;
     BlendMap m_terrainBlendmap;
     
     // DEBUG

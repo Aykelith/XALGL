@@ -15,7 +15,7 @@ public:
     }
     
     void update(/*sf::Window& window*/) {
-        float d = 0.3f;
+        float d = 1.f;
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {
             m_position += d * m_front;
         } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) {
@@ -83,7 +83,7 @@ public:
     }
     
 private:
-    glm::vec3 m_position = glm::vec3(0.0f, 3.0f, 3.0f);
+    glm::vec3 m_position = glm::vec3(50.0f, 40.0f, 50.0f);
     glm::vec3 m_front    = glm::vec3(0.0f, 0.0f, -1.0f);
     glm::vec3 m_up       = glm::vec3(0.0f, 1.0f,  0.0f);
     

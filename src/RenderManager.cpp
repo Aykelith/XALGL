@@ -1,12 +1,7 @@
 #include <RenderManager.hpp>
 
-RenderManager::RenderManager(const glm::mat4& projectionMatrix)
-    : m_projectionMatrix { projectionMatrix }
-    , m_terrain { 0, -1, projectionMatrix }
-#ifdef LIGHT_BOXES
-    , d_lightShader { projectionMatrix }
-#endif
-{ 
+void RenderManager::initialize() {
+    m_terrain.loadHeightmap(0, -1, "res/heightmap.png");
     m_terrainBlendmap.setTexture(ColorChannel::BLACK, "res/grassy2.png");
     m_terrainBlendmap.setTexture(ColorChannel::RED, "res/mud.png");
     m_terrainBlendmap.setTexture(ColorChannel::GREEN, "res/grassFlowers.png");
@@ -14,6 +9,11 @@ RenderManager::RenderManager(const glm::mat4& projectionMatrix)
     m_terrainBlendmap.setBlendMap("res/blendMap.png");
     m_terrainBlendmap.initialize(m_terrain.getShader());
     std::cout << "Out\n";
+    
+#ifdef LIGHT_BOXES
+    d_lightShader.initialize();
+    d_lightModel.initialize();
+#endif
 }
 
 void RenderManager::addDrawable(uint32_t id, uint32_t model) {
@@ -57,19 +57,19 @@ void RenderManager::addShader(uint32_t id, const Shader::Settings& settings, con
     shader.stop();
 }
 
-void RenderManager::render(Camera &camera) {
+void RenderManager::draw(Camera &camera) {
     auto& terrainShader = m_terrain.getShader();
     terrainShader.start();
     m_terrainBlendmap.start(terrainShader);
     terrainShader.loadMatrix(Shader::Uniform::VIEW_MATRIX, camera.getViewMatrix());
     
-    // terrainShader.loadVector3(Shader::Uniform::VIEW_POS, camera.getPosition());
+    terrainShader.loadVector3(Shader::Uniform::VIEW_POS, camera.getPosition());
     
-    // m_directionalLight.update(terrainShader);
-    // 
-    // for (auto it = m_pointLights.begin(); it != m_pointLights.end(); ++it) {
-    //     it->update(terrainShader);
-    // }
+    m_directionalLight.update(terrainShader);
+    
+    for (auto it = m_pointLights.begin(); it != m_pointLights.end(); ++it) {
+        it->update(terrainShader);
+    }
     
     m_terrain.draw();
     m_terrainBlendmap.stop();

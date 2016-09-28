@@ -10,7 +10,9 @@
 namespace Debug {    
     class LightModel {
     public:
-        LightModel() {
+        LightModel() = default;
+        
+        void initialize() {
             GLuint VBO;
             glGenVertexArrays(1, &m_VAO);
             glGenBuffers(1, &VBO);
@@ -109,7 +111,9 @@ namespace Debug {
         static const uint UNIFORM_COLOR = Shader::Uniform::_COUNT + 1;
         
     public:
-        LightShader(const glm::mat4& perspectiveMatrix) {
+        LightShader() = default;
+        
+        void initialize() {
             loadShader(VERTEX_SOURCE, GL_VERTEX_SHADER);
             loadShader(FRAGMENT_SOURCE, GL_FRAGMENT_SHADER);
             createProgram();
@@ -119,6 +123,9 @@ namespace Debug {
             storeUniformLocation(Shader::Uniform::VIEW_MATRIX, "view");
             storeUniformLocation(Shader::Uniform::PROJECTION_MATRIX, "projection");
             storeUniformLocation(UNIFORM_COLOR, "color");
+        }
+        
+        void setProjectionMatrix(const glm::mat4& perspectiveMatrix) {
             start();
             loadMatrix(Shader::Uniform::PROJECTION_MATRIX, perspectiveMatrix);
             stop();

@@ -172,6 +172,9 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene) {
         loadMaterialTextures(material, aiTextureType_SPECULAR, TextureType::Specular, meshObject);
     }
     
+    //TODO
+    meshObject.setMaterialShininess(16.f);
+    
     // Return a mesh object created from the extracted mesh data
     meshObject.glue();
     return meshObject;
