@@ -127,25 +127,25 @@ namespace Shader {
         shader.bindAttribute(1, "normal");
         shader.bindAttribute(2, "texCoords");
         shader.link();
-        shader.storeUniformLocation(Uniform::MODEL_MATRIX, "model");
-        shader.storeUniformLocation(Uniform::VIEW_MATRIX, "view");
-        shader.storeUniformLocation(Uniform::PROJECTION_MATRIX, "projection");
+        shader.storeUniformLocation(static_cast<int>(Uniform::MODEL_MATRIX), "model");
+        shader.storeUniformLocation(static_cast<int>(Uniform::VIEW_MATRIX), "view");
+        shader.storeUniformLocation(static_cast<int>(Uniform::PROJECTION_MATRIX), "projection");
         
         if (settings.fragment.light.directionalLight || settings.fragment.light.pointLights) {
-            shader.storeUniformLocation(Uniform::VIEW_POS, "viewPos");
+            shader.storeUniformLocation(static_cast<int>(Uniform::VIEW_POS), "viewPos");
         }
         
         if (settings.fragment.material) {
             if (settings.fragment.material.constantShininess == -1.f) {
-                shader.storeUniformLocation(Uniform::MATERIAL_SHININESS, "material.shininess");
+                shader.storeUniformLocation(static_cast<int>(Uniform::MATERIAL_SHININESS), "material.shininess");
             }
             
             if (settings.fragment.material.diffuseTextures) {
-                shader.storeUniformLocation(Uniform::MATERIAL_DIFFUSE_TEXTURE, "material.diffuse");
+                shader.storeUniformLocation(static_cast<int>(Uniform::MATERIAL_DIFFUSE_TEXTURE), "material.diffuse");
             }
             
             if (settings.fragment.material.specularTextures) {
-                shader.storeUniformLocation(Uniform::MATERIAL_SPECULAR_TEXTURE, "material.specular");
+                shader.storeUniformLocation(static_cast<int>(Uniform::MATERIAL_SPECULAR_TEXTURE), "material.specular");
             }
         }
         

@@ -9,24 +9,23 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include <Debug.hpp>
+#include <Shader/Uniforms.hpp>
 
 #include <unordered_map>
 
 namespace Shader {
-    static const int MAX_MATERIALS = 10;
-    static const int MAX_MATERIAL_DIFFUSE_TEXTURES = 10;
-    
-    enum Uniform {
-        MODEL_MATRIX = 0,
+    enum class Uniform : int {
+        MODEL_MATRIX = Impl::BASE_START,
         VIEW_MATRIX,
         PROJECTION_MATRIX,
         VIEW_POS,
         MATERIAL,
-        MATERIAL_SHININESS = MATERIAL + MAX_MATERIALS - 1,
+        MATERIAL_SHININESS = MATERIAL + Impl::MAX_MATERIALS,
         MATERIAL_DIFFUSE_TEXTURE,
-        MATERIAL_SPECULAR_TEXTURE = MATERIAL_DIFFUSE_TEXTURE + MAX_MATERIAL_DIFFUSE_TEXTURES - 1,
+        MATERIAL_SPECULAR_TEXTURE = MATERIAL_DIFFUSE_TEXTURE + Impl::MAX_MATERIAL_DIFFUSE_TEXTURES,
         _COUNT
     };
+    static_assert(static_cast<int>(Uniform::_COUNT) == Impl::BASE_START + Impl::BASE_COUNT);
     
     class ShaderProgram {
     public:
@@ -53,10 +52,16 @@ namespace Shader {
                 m_fragmentShaderID = shaderID;
             }
         }
+        
         void loadShader(const std::string& file, int type) {
             auto stringContent = getFileContent(file);
             std::cout << "0\n";
             loadShader(stringContent.c_str(), type);
+        }
+        
+        void loadShader(const std::string& vertFile, const std::string& fragFile) {
+            loadShader(vertFile, GL_VERTEX_SHADER);
+            loadShader(fragFile, GL_FRAGMENT_SHADER);
         }
         
         void createProgram() {

@@ -2,10 +2,10 @@
 
 void RenderManager::initialize() {
     m_terrain.loadHeightmap(0, -1, "res/heightmap.png");
-    m_terrainBlendmap.setTexture(ColorChannel::BLACK, "res/grassy2.png");
-    m_terrainBlendmap.setTexture(ColorChannel::RED, "res/mud.png");
-    m_terrainBlendmap.setTexture(ColorChannel::GREEN, "res/grassFlowers.png");
-    m_terrainBlendmap.setTexture(ColorChannel::BLUE, "res/path.png");
+    m_terrainBlendmap.setTexture(BlendMap::ColorChannel::BLACK, "res/grassy2.png");
+    m_terrainBlendmap.setTexture(BlendMap::ColorChannel::RED, "res/mud.png");
+    m_terrainBlendmap.setTexture(BlendMap::ColorChannel::GREEN, "res/grassFlowers.png");
+    m_terrainBlendmap.setTexture(BlendMap::ColorChannel::BLUE, "res/path.png");
     m_terrainBlendmap.setBlendMap("res/blendMap.png");
     m_terrainBlendmap.initialize(m_terrain.getShader());
     std::cout << "Out\n";
@@ -42,7 +42,7 @@ void RenderManager::addShader(uint32_t id, const Shader::Settings& settings) {
     Shader::generateShaderFiles(shader, settings);
     Shader::initializeShader(shader, settings);
     shader.start();
-    shader.loadMatrix(Shader::Uniform::PROJECTION_MATRIX, m_projectionMatrix);
+    shader.loadMatrix(static_cast<int>(Shader::Uniform::PROJECTION_MATRIX), m_projectionMatrix);
     shader.stop();
 }
 
@@ -53,7 +53,7 @@ void RenderManager::addShader(uint32_t id, const Shader::Settings& settings, con
     shader.loadShader(fragmentFile, GL_FRAGMENT_SHADER);
     Shader::initializeShader(shader, settings);
     shader.start();
-    shader.loadMatrix(Shader::Uniform::PROJECTION_MATRIX, m_projectionMatrix);
+    shader.loadMatrix(static_cast<int>(Shader::Uniform::PROJECTION_MATRIX), m_projectionMatrix);
     shader.stop();
 }
 
@@ -61,9 +61,9 @@ void RenderManager::draw(Camera &camera) {
     auto& terrainShader = m_terrain.getShader();
     terrainShader.start();
     m_terrainBlendmap.start(terrainShader);
-    terrainShader.loadMatrix(Shader::Uniform::VIEW_MATRIX, camera.getViewMatrix());
+    terrainShader.loadMatrix(static_cast<int>(Shader::Uniform::VIEW_MATRIX), camera.getViewMatrix());
     
-    terrainShader.loadVector3(Shader::Uniform::VIEW_POS, camera.getPosition());
+    terrainShader.loadVector3(static_cast<int>(Shader::Uniform::VIEW_POS), camera.getPosition());
     
     m_directionalLight.update(terrainShader);
     
@@ -79,8 +79,8 @@ void RenderManager::draw(Camera &camera) {
     for (auto& list : m_drawableLists) {
         list.second.shader.start();
         
-        list.second.shader.loadMatrix(Shader::Uniform::VIEW_MATRIX, camera.getViewMatrix());
-        list.second.shader.loadVector3(Shader::Uniform::VIEW_POS, camera.getPosition());
+        list.second.shader.loadMatrix(static_cast<int>(Shader::Uniform::VIEW_MATRIX), camera.getViewMatrix());
+        list.second.shader.loadVector3(static_cast<int>(Shader::Uniform::VIEW_POS), camera.getPosition());
         
         m_directionalLight.update(list.second.shader);
 
@@ -94,13 +94,13 @@ void RenderManager::draw(Camera &camera) {
         auto meshes = list.second.model.meshesCount();
         for (std::size_t i=0; i<meshes; ++i) {
             for (auto it = list.second.drawables.begin(); it != list.second.drawables.end(); ++it) {
-                list.second.shader.loadMatrix(Shader::Uniform::MODEL_MATRIX, *it);
+                list.second.shader.loadMatrix(static_cast<int>(Shader::Uniform::MODEL_MATRIX), *it);
                 list.second.model.drawE(list.second.shader, i);
             }
         }
 #else
         for (auto it = list.second.drawables.begin(); it != list.second.drawables.end(); ++it) {
-            list.second.shader.loadMatrix(Shader::Uniform::MODEL_MATRIX, *it);
+            list.second.shader.loadMatrix(static_cast<int>(Shader::Uniform::MODEL_MATRIX), *it);
             list.second.model.draw(list.second.shader);
         }
         
@@ -118,12 +118,12 @@ void RenderManager::draw(Camera &camera) {
     
 #ifdef LIGHT_BOXES
     d_lightShader.start();
-    d_lightShader.loadMatrix(Shader::Uniform::VIEW_MATRIX, camera.getViewMatrix());
+    d_lightShader.loadMatrix(static_cast<int>(Shader::Uniform::VIEW_MATRIX), camera.getViewMatrix());
     glBindVertexArray(d_lightModel.getVAO());
     for (auto it = m_pointLights.begin(); it != m_pointLights.end(); ++it) {
         glm::mat4 modelm;
         modelm = glm::translate(modelm, it->getPosition());
-        d_lightShader.loadMatrix(Shader::Uniform::MODEL_MATRIX, modelm);
+        d_lightShader.loadMatrix(static_cast<int>(Shader::Uniform::MODEL_MATRIX), modelm);
         d_lightShader.loadVector3(Debug::LightShader::UNIFORM_COLOR, it->getDiffuse());
         glDrawArrays(GL_TRIANGLES, 0, 36);
     }

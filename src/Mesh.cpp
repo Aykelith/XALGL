@@ -14,18 +14,18 @@ void Mesh::draw(Shader::ShaderProgram& shader)
     // Tip for multi texture: glActiveTexture(GL_TEXTURE0 + i);
     if (m_material.haveDiffuseTexture) {
         glActiveTexture(GL_TEXTURE0);
-        shader.loadInt(Shader::Uniform::MATERIAL_DIFFUSE_TEXTURE, 0);
+        shader.loadInt(static_cast<int>(Shader::Uniform::MATERIAL_DIFFUSE_TEXTURE), 0);
         glBindTexture(GL_TEXTURE_2D, m_material.diffuseTexture);
     }
     
     if (m_material.haveSpecularTexture) {
         glActiveTexture(GL_TEXTURE1);
-        shader.loadInt(Shader::Uniform::MATERIAL_SPECULAR_TEXTURE, 1);
+        shader.loadInt(static_cast<int>(Shader::Uniform::MATERIAL_SPECULAR_TEXTURE), 1);
         glBindTexture(GL_TEXTURE_2D, m_material.specularTexture);
     }
     
     // Also set each mesh's shininess property to a default value (if you want you could extend this to another mesh property and possibly change this value)
-    if (m_material.haveShininess) shader.loadFloat(Shader::Uniform::MATERIAL_SHININESS, m_material.shininess);
+    if (m_material.haveShininess) shader.loadFloat(static_cast<int>(Shader::Uniform::MATERIAL_SHININESS), m_material.shininess);
 
     // Draw mesh
     glBindVertexArray(m_VAO);
@@ -79,7 +79,7 @@ void Mesh::unbindTextures() {
 
 void Mesh::drawE(StaticShader& shader) {
     // Also set each mesh's shininess property to a default value (if you want you could extend this to another mesh property and possibly change this value)
-    shader.loadFloat(Shader::Uniform::MATERIAL_SHININESS, 16.0f);
+    shader.loadFloat(static_cast<int>(Shader::Uniform::MATERIAL_SHININESS), 16.0f);
 
     // Draw mesh
     glBindVertexArray(m_VAO);

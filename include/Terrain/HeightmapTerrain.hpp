@@ -30,11 +30,11 @@ namespace Terrains {
         void setProjectionMatrix(const glm::mat4& projectionMatrix) { 
             m_shader.start();
             
-            m_shader.loadMatrix(Shader::Uniform::PROJECTION_MATRIX, projectionMatrix);
+            m_shader.loadMatrix(static_cast<int>(Shader::Uniform::PROJECTION_MATRIX), projectionMatrix);
             
             glm::mat4 modelm;
             modelm = glm::translate(modelm, glm::vec3(0.f, 0.f, 0.f));
-            m_shader.loadMatrix(Shader::Uniform::MODEL_MATRIX, modelm);
+            m_shader.loadMatrix(static_cast<int>(Shader::Uniform::MODEL_MATRIX), modelm);
             
             m_shader.stop();
         }

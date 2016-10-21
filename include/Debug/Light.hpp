@@ -6,6 +6,7 @@
 #include <GL.hpp>
 #include <Debug.hpp>
 #include <Shader/ShaderProgram.hpp>
+#include <Shader/Uniforms.hpp>
 
 namespace Debug {    
     class LightModel {
@@ -108,7 +109,7 @@ namespace Debug {
 
     class LightShader: public Shader::ShaderProgram {
     public:
-        static const uint UNIFORM_COLOR = Shader::Uniform::_COUNT + 1;
+        static const uint UNIFORM_COLOR = Shader::NEXT_UNIFORM;
         
     public:
         LightShader() = default;
@@ -119,15 +120,15 @@ namespace Debug {
             createProgram();
             bindAttribute(0, "position");
             link();
-            storeUniformLocation(Shader::Uniform::MODEL_MATRIX, "model");
-            storeUniformLocation(Shader::Uniform::VIEW_MATRIX, "view");
-            storeUniformLocation(Shader::Uniform::PROJECTION_MATRIX, "projection");
-            storeUniformLocation(UNIFORM_COLOR, "color");
+            storeUniformLocation(static_cast<int>(Shader::Uniform::MODEL_MATRIX), "model");
+            storeUniformLocation(static_cast<int>(Shader::Uniform::VIEW_MATRIX), "view");
+            storeUniformLocation(static_cast<int>(Shader::Uniform::PROJECTION_MATRIX), "projection");
+            storeUniformLocation(static_cast<int>(UNIFORM_COLOR), "color");
         }
         
         void setProjectionMatrix(const glm::mat4& perspectiveMatrix) {
             start();
-            loadMatrix(Shader::Uniform::PROJECTION_MATRIX, perspectiveMatrix);
+            loadMatrix(static_cast<int>(Shader::Uniform::PROJECTION_MATRIX), perspectiveMatrix);
             stop();
         }
     };

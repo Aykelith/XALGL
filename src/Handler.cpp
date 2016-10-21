@@ -22,6 +22,10 @@ Handler::Handler()
     
     glCullFace(GL_BACK);
     
+    // For text
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); 
+    
     m_world.initialize();
 }
 

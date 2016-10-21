@@ -22,6 +22,7 @@ find_package(SFML 2.3 REQUIRED system window graphics)
 find_package(OpenGL REQUIRED)
 find_package(GLEW REQUIRED)
 find_package(assimp REQUIRED)
+find_package(Freetype REQUIRED)
 #####################################################1###########################
 
 set(INCLUDE_PATH "${PROJECT_SOURCE_DIR}/include")
@@ -33,12 +34,13 @@ file(
         ${SOURCE_PATH}/*
 )
 
-include_directories(${INCLUDE_PATH})
-include_directories(${SFML_INCLUDE_DIR})
-include_directories(${OPENGL_INCLUDE_DIRS})
-include_directories(${GLEW_INCLUDE_DIRS})
-include_directories(${ASSIMP_INCLUDE_DIR})
-include_directories(SYSTEM "E:/Work/Programare/Libs/_sources/glm")
+include_directories(${INCLUDE_PATH}
+	${SFML_INCLUDE_DIR}
+	${OPENGL_INCLUDE_DIRS}
+	${GLEW_INCLUDE_DIRS}
+	${ASSIMP_INCLUDE_DIR}
+	SYSTEM "/home/alexxanderx/Documents/Libraries/glm"
+	${FREETYPE_INCLUDE_DIRS} )
 
 # Compiler settings
 ################################################################################
@@ -67,4 +69,5 @@ target_link_libraries(OpenGLGame
 	${SFML_LIBRARIES}
 	${GLEW_LIBRARIES}
  	${OPENGL_LIBRARIES}
-	"E:/Work/Programare/Libs/_builds/mingw610-v5r1/assimp/lib/libassimp.dll.a" )
+	"E:/Work/Programare/Libs/_builds/mingw610-v5r1/assimp/lib/libassimp.dll.a"
+	${FREETYPE_LIBRARIES} )

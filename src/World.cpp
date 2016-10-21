@@ -55,6 +55,19 @@ void World::initialize() {
     modelm = glm::scale(modelm, glm::vec3(0.5f, 0.5f, 0.5f));
     
     m_renderManager.addDrawable(0, modelm);
+    
+    m_font.loadFromFile("res/Instruction.otf");
+    
+    m_textShader.loadShader("res/text.vert", "res/text.frag");
+    m_textShader.initialize();
+    
+    glm::mat4 projection = glm::ortho(0.0f, static_cast<GLfloat>(m_window.getSize().x), static_cast<GLfloat>(m_window.getSize().y), 0.0f);
+    m_textShader.setProjection(projection);
+    
+    m_text.initialize();
+    m_text.setFont(m_font);
+    m_text.setPosition({10.f, 10.f});
+    m_text.setString("Text");
 }
 
 void World::events(const sf::Event& event) {
@@ -67,4 +80,9 @@ void World::update(float dt) {
 
 void World::draw() {
     m_renderManager.draw(m_camera);
+    
+    m_textShader.start();
+    m_text.draw(m_textShader);
+    m_textShader.stop();
+    assert(!checkErrors());
 }

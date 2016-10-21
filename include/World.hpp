@@ -12,6 +12,10 @@
 
 #include <Debug.hpp>
 
+#include <Text/Font.hpp>
+#include <Text/TextShader.hpp>
+#include <Text/Text.hpp>
+
 class World {
 public:
     World(sf::Window& window);
@@ -32,7 +36,10 @@ private:
     glm::mat4 m_projectionMatrix;
     RenderManager m_renderManager;
     Camera m_camera;
-        
+    
+    Font m_font;
+    TextShader m_textShader;
+    Text m_text;
 };
 
 #endif
