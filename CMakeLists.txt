@@ -38,7 +38,7 @@ include_directories(${INCLUDE_PATH}
 	${SFML_INCLUDE_DIR}
 	${OPENGL_INCLUDE_DIRS}
 	${GLEW_INCLUDE_DIRS}
-	${ASSIMP_INCLUDE_DIR}
+	${assimp_INCLUDE_DIRS}
 	SYSTEM "/home/alexxanderx/Documents/Libraries/glm"
 	${FREETYPE_INCLUDE_DIRS} )
 
@@ -69,5 +69,5 @@ target_link_libraries(OpenGLGame
 	${SFML_LIBRARIES}
 	${GLEW_LIBRARIES}
  	${OPENGL_LIBRARIES}
-	"E:/Work/Programare/Libs/_builds/mingw610-v5r1/assimp/lib/libassimp.dll.a"
+	${assimp_LIBRARIES}
 	${FREETYPE_LIBRARIES} )

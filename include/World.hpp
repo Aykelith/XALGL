@@ -12,34 +12,26 @@
 
 #include <Debug.hpp>
 
-#include <Text/Font.hpp>
-#include <Text/TextShader.hpp>
-#include <Text/Text.hpp>
-
 class World {
 public:
     World(sf::Window& window);
-    
+
     void initialize();
-    
+
     void events(const sf::Event& event);
     void update(float dt);
     void draw();
-    
+
 private:
     static constexpr float FOV = 45.f;
     static constexpr float NEAR_PLANE = 0.1f;
     static constexpr float FAR_PLANE = 1000.f;
-    
+
 private:
     sf::Window& m_window;
     glm::mat4 m_projectionMatrix;
     RenderManager m_renderManager;
     Camera m_camera;
-    
-    Font m_font;
-    TextShader m_textShader;
-    Text m_text;
 };
 
 #endif

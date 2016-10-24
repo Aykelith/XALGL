@@ -25,19 +25,19 @@ namespace Shader {
         MATERIAL_SPECULAR_TEXTURE = MATERIAL_DIFFUSE_TEXTURE + Impl::MAX_MATERIAL_DIFFUSE_TEXTURES,
         _COUNT
     };
-    static_assert(static_cast<int>(Uniform::_COUNT) == Impl::BASE_START + Impl::BASE_COUNT);
-    
+    static_assert(static_cast<int>(Uniform::_COUNT) == Impl::BASE_START + Impl::BASE_COUNT, "");
+
     class ShaderProgram {
     public:
         ShaderProgram() = default;
-        
-        GLuint getProgramID() const { return m_programID; } 
-        
+
+        GLuint getProgramID() const { return m_programID; }
+
         void loadShader(const char* data, int type) {
             auto shaderID = glCreateShader(type);
             glShaderSource(shaderID, 1, &data, NULL);
             glCompileShader(shaderID);
-            
+
             GLint success;
             glGetShaderiv(shaderID, GL_COMPILE_STATUS, &success);
             if (success == GL_FALSE) {
@@ -45,58 +45,58 @@ namespace Shader {
                 glGetShaderInfoLog(shaderID, 512, NULL, &log[0]);
                 std::cout << ((type == GL_VERTEX_SHADER) ? "VERT" : "FRAG") << ":" << log << "\n";
             }
-            
+
             if (type == GL_VERTEX_SHADER) {
                 m_vertexShaderID = shaderID;
             } else {
                 m_fragmentShaderID = shaderID;
             }
         }
-        
+
         void loadShader(const std::string& file, int type) {
             auto stringContent = getFileContent(file);
             std::cout << "0\n";
             loadShader(stringContent.c_str(), type);
         }
-        
+
         void loadShader(const std::string& vertFile, const std::string& fragFile) {
             loadShader(vertFile, GL_VERTEX_SHADER);
             loadShader(fragFile, GL_FRAGMENT_SHADER);
         }
-        
+
         void createProgram() {
             m_programID = glCreateProgram();
             glAttachShader(m_programID, m_vertexShaderID);
             glAttachShader(m_programID, m_fragmentShaderID);
         }
-        
+
         void bindAttribute(GLuint attribute, const char* name) { glBindAttribLocation(m_programID, attribute, name); }
-        
+
         void link() {
             glLinkProgram(m_programID);
             if (checkErrors(__LINE__, __FILE__)) exit(1);
             glValidateProgram(m_programID);
         }
-        
+
         void loadInt(uint id, GLint value) { glUniform1i(m_uniforms[id], value); assert(!checkErrors()); }
         void loadUInt(uint id, GLuint value) { glUniform1ui(m_uniforms[id], value); assert(!checkErrors()); }
         void loadFloat(uint id, GLfloat value) { glUniform1f(m_uniforms[id], value);  }
         void loadVector3(uint id, const glm::vec3& vec3) { glUniform3f(m_uniforms[id], vec3.x, vec3.y, vec3.z); assert(!checkErrors()); }
         void loadMatrix(uint id, const glm::mat4& mat4) { glUniformMatrix4fv(m_uniforms[id], 1, GL_FALSE, glm::value_ptr(mat4)); assert(!checkErrors()); }
-        
+
         void storeUniformLocation(uint id, const char* name) {
             m_uniforms.emplace(id, glGetUniformLocation(m_programID, name));
             assert(!checkErrors());
             assert(m_uniforms[id] != -1);
         }
-        
+
         GLint getUniformLocation(const char* name) const {
             return glGetUniformLocation(m_programID, name);
-        } 
-        
+        }
+
         void start() { glUseProgram(m_programID); }
         void stop() { glUseProgram(0); }
-        
+
         void cleanUp() {
             stop();
             glDetachShader(m_programID, m_vertexShaderID);
@@ -105,8 +105,8 @@ namespace Shader {
             glDeleteShader(m_fragmentShaderID);
             glDeleteShader(m_programID);
         }
-        
-    protected:    
+
+    protected:
         bool checkCompilation(GLint shaderID) {
             GLint success;
             glGetShaderiv(shaderID, GL_COMPILE_STATUS, &success);
@@ -118,7 +118,7 @@ namespace Shader {
             }
             return true;
         }
-        
+
         std::string getFileContent(const std::string& filename) {
             std::ifstream in(filename, std::ios::in | std::ios::binary);
             if (in)
@@ -133,12 +133,12 @@ namespace Shader {
             }
             throw(errno);
         }
-        
+
     protected:
         GLuint m_programID;
         GLuint m_vertexShaderID;
         GLuint m_fragmentShaderID;
-        
+
         std::unordered_map<uint, GLint> m_uniforms;
     };
 }

@@ -10,7 +10,8 @@ public:
         , top  { top }
         , width { width }
         , height { height }
-    
+    { }
+
     T left = 0;
     T top = 0;
     T width = 0;

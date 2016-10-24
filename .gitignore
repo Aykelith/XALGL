@@ -4,3 +4,5 @@ bin/res/models
 *.png
 *.exe
 *.bat
+bin/OpenGLGame
+run.sh
